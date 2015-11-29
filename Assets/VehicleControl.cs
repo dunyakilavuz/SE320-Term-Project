@@ -3,15 +3,15 @@ using System.Collections;
 
 public class VehicleControl : MonoBehaviour 
 {
-	float movementSpeed = 2f;
+	public float movementSpeed = 2f;
 	float rotationSpeed = 0.5f;
-	bool easyMode = true;
+	public bool easyMode = false;
 
-	void Start () 
-	{
-	
-	}
-	
+	Vector3 targetPoint;
+	bool shouldMove;
+	Compiler compiler = new Compiler();
+	public string code;
+
 
 	void Update () 
 	{
@@ -45,9 +45,27 @@ public class VehicleControl : MonoBehaviour
 		}
 	}
 
-	void HardControl()
+	public void HardControl()
 	{
-		Compiler.Compile ("Hello");
+		if (shouldMove == true) 
+		{
+			transform.Translate ((targetPoint - transform.position) * Time.deltaTime * movementSpeed);
+			if((targetPoint - transform.position).magnitude < 1)
+			{
+				shouldMove = false;
+			}
+		}
 	}
 
+
+	public void takeInstruction(int movementType,int value)
+	{
+		if (movementType == 1) 
+		{
+			targetPoint = transform.position + Vector3.forward * value;
+			shouldMove = true;
+
+
+		}
+	}
 }
