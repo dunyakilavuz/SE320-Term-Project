@@ -5,6 +5,7 @@ public class GUIStuff : MonoBehaviour
 {
 	public string stringToEdit;
 	GameObject rover;
+	public bool execute = false;
 	
 	void Start()
 	{
@@ -21,6 +22,7 @@ public class GUIStuff : MonoBehaviour
 			if(stringToEdit != "")
 			{
 				rover.GetComponent<VehicleControl>().code = stringToEdit;
+				execute = true;
 			}
 		}
 

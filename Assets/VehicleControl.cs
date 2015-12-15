@@ -8,9 +8,15 @@ public class VehicleControl : MonoBehaviour
 	public bool easyMode = false;
 
 	Vector3 targetPoint;
-	bool shouldMove;
 	Compiler compiler = new Compiler();
 	public string code;
+	public bool isMoving;
+	GameObject GUIStuff;
+
+	void Start()
+	{
+		GUIStuff = GameObject.Find ("GUI Stuff");
+	}
 
 
 	void Update () 
@@ -19,8 +25,21 @@ public class VehicleControl : MonoBehaviour
 		{
 			EasyControl ();
 		} 
-		else 
+		else
 		{
+			if(GUIStuff.GetComponent<GUIStuff>().execute == true)
+			{
+				compiler.readText(code,this.gameObject);
+				compiler.processLine();
+				GUIStuff.GetComponent<GUIStuff>().execute = false;
+			}
+			/*
+			if(isMoving = false && compiler.code.Length != 0)
+			{
+				compiler.processLine();
+			}
+			*/
+
 			HardControl ();
 		}
 	}
@@ -47,14 +66,16 @@ public class VehicleControl : MonoBehaviour
 
 	public void HardControl()
 	{
-		if (shouldMove == true) 
+		if (isMoving == true) 
 		{
-			transform.Translate ((targetPoint - transform.position) * Time.deltaTime * movementSpeed);
-			if((targetPoint - transform.position).magnitude < 1)
-			{
-				shouldMove = false;
-			}
+			transform.Translate((targetPoint - transform.position).normalized * Time.deltaTime * movementSpeed);
 		}
+
+		if (Vector3.Distance (transform.position, targetPoint) < 1f) 
+		{
+			isMoving = false;
+		}
+		
 	}
 
 
@@ -63,9 +84,13 @@ public class VehicleControl : MonoBehaviour
 		if (movementType == 1) 
 		{
 			targetPoint = transform.position + Vector3.forward * value;
-			shouldMove = true;
-
-
+			Debug.Log("Target Point: " + targetPoint);
+			isMoving = true;
+		}
+		if (movementType == 2) 
+		{
+			targetPoint = transform.position + Vector3.back * value;
+			isMoving = true;
 		}
 	}
 }
