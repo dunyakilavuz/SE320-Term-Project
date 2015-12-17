@@ -3,24 +3,44 @@ using System.Collections;
 
 public class VehicleControl : MonoBehaviour 
 {
-	public float movementSpeed = 2f;
-	float rotationSpeed = 0.5f;
+	public float movementSpeed;
+	float rotationSpeed;
 	public bool easyMode = false;
+
+	float mouseX;
+	float mouseY;
+	Transform mouseRotation;
 
 	Vector3 targetPoint;
 	Compiler compiler = new Compiler();
 	public string code;
 	public bool isMoving;
 	GameObject GUIStuff;
+	public GameObject cameraOrbit;
+
+	public GameObject wheelFrontLeft;
+	public GameObject wheelFrontRight;
+	public GameObject wheelRearLeft;
+	public GameObject wheelRearRight;
 
 	void Start()
 	{
 		GUIStuff = GameObject.Find ("GUI Stuff");
+		movementSpeed = 8f;
+		rotationSpeed = 1f;
 	}
 
 
 	void Update () 
 	{
+		if (Input.GetMouseButton (1)) 
+		{
+			mouseX = mouseX + Input.GetAxis ("Mouse X");
+			mouseY = mouseY - Input.GetAxis("Mouse Y");
+			cameraOrbit.transform.rotation = Quaternion.Euler (mouseY, mouseX, 0);
+
+		}
+
 		if (easyMode == true)
 		{
 			EasyControl ();
@@ -48,19 +68,21 @@ public class VehicleControl : MonoBehaviour
 	{
 		if (Input.GetKey (KeyCode.W) == true)
 		{
-			transform.Translate(Vector3.forward * Time.deltaTime * movementSpeed);
+			moveForward();
+
 		}
 		if (Input.GetKey (KeyCode.S) == true)
 		{
-			transform.Translate (Vector3.back * Time.deltaTime * movementSpeed);
+			moveBack();
+
 		}
 		if (Input.GetKey (KeyCode.A) == true)
 		{
-			transform.Rotate(0,-rotationSpeed,0);
+			rotateLeft();
 		}
 		if (Input.GetKey (KeyCode.D) == true)
 		{
-			transform.Rotate(0,rotationSpeed,0);
+			rotateRight();
 		}
 	}
 
@@ -92,5 +114,37 @@ public class VehicleControl : MonoBehaviour
 			targetPoint = transform.position + Vector3.back * value;
 			isMoving = true;
 		}
+	}
+
+	void moveForward()
+	{
+		transform.Translate(Vector3.forward * Time.deltaTime * movementSpeed);
+		wheelFrontRight.transform.Rotate(movementSpeed,0,0);
+		wheelFrontLeft.transform.Rotate(movementSpeed,0,0);
+		wheelRearRight.transform.Rotate(movementSpeed,0,0);
+		wheelRearLeft.transform.Rotate(movementSpeed,0,0);
+	}
+
+	void moveBack()
+	{
+		transform.Translate (Vector3.back * Time.deltaTime * movementSpeed);
+		wheelFrontRight.transform.Rotate(-movementSpeed,0,0);
+		wheelFrontLeft.transform.Rotate(-movementSpeed,0,0);
+		wheelRearRight.transform.Rotate(-movementSpeed,0,0);
+		wheelRearLeft.transform.Rotate(-movementSpeed,0,0);
+	}
+
+	void rotateLeft()
+	{
+		transform.Rotate(0,-rotationSpeed,0);
+		//wheelFrontRight.transform.Rotate(-movementSpeed,0,0);
+		//wheelFrontLeft.transform.Rotate(-movementSpeed,0,0);
+	}
+
+	void rotateRight()
+	{
+		transform.Rotate(0,rotationSpeed,0);
+		//wheelFrontRight.transform.Rotate(-movementSpeed,0,0);
+		//wheelFrontLeft.transform.Rotate(-movementSpeed,0,0);
 	}
 }
