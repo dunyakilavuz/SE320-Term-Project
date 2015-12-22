@@ -9,6 +9,7 @@ public class Compiler
 	bool readMode;
 	int value;
 	GameObject rover;
+	int[] movementQueue = new int[20];
 
 	public void readText(string myCode,GameObject myObject)
 	{
@@ -19,43 +20,53 @@ public class Compiler
 	public void processLine()
 	{
 		int i = 0;
+		int counter = 0;
 		commandString = "";
 		valueString = "";
 		readMode = false;
 
-		while (code.Substring(i,1) != ";") 
+		while (code.Substring(counter,1) != ";") 
 		{
-			if(code.Substring(i,1) == " ")
+			while (code.Substring(counter,1) != ",") 
 			{
-				readMode = !readMode;
+				if(code.Substring(counter,1) == " ")
+				{
+					readMode = !readMode;
+				}
+				
+				if(readMode == false)
+				{
+					commandString = commandString + code.Substring(counter,1);
+				}
+				else
+				{
+					valueString  = valueString  + code.Substring(counter,1);
+				}
+				
+				counter++;
 			}
-
-			if(readMode == false)
+			counter++;
+			
+			readMode = false;
+			int.TryParse (valueString, out value);
+			
+			if(commandString == "forward")
 			{
-				commandString = commandString + code.Substring(i,1);
+				movementQueue[i] = 1;
+				movementQueue[i+1] = value;
+				i = i + 2;
 			}
-			else
+			else if(commandString == "back")
 			{
-				valueString  = valueString  + code.Substring(i,1);
+				movementQueue[i] = 2;
+				movementQueue[i+1] = value;
+				i = i + 2;
 			}
-
-			i++;
 		}
-
-		readMode = !readMode;
-		int.TryParse (valueString, out value);
-		
-		if(commandString == "forward")
+		Debug.Log (code);
+		for(int a = 0; a < movementQueue.Length; a++)
 		{
-			rover.GetComponent<VehicleControl>().takeInstruction(1,value);
+			Debug.Log(movementQueue[a]);
 		}
-		else if(commandString == "back")
-		{
-			rover.GetComponent<VehicleControl>().takeInstruction(2,value);
-		}
-		Debug.Log ("code: " + code);
-		code.Remove (0, i);
-		Debug.Log ("code: " + code);
-		
 	}
 }

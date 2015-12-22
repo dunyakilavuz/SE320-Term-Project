@@ -15,16 +15,19 @@ public class GUIStuff : MonoBehaviour
 
 	void OnGUI() 
 	{
-		stringToEdit = GUI.TextArea(new Rect(10, 10, 200, 100), stringToEdit, 200);
-
-		if (GUI.Button (new Rect (10, 110, 100, 20), "Execute") == true) 
+		if (rover.GetComponent<VehicleControl> ().easyMode == false)
 		{
-			if(stringToEdit != "")
+			stringToEdit = GUI.TextArea(new Rect(10, 10, 200, 100), stringToEdit, 200);
+
+			if (GUI.Button (new Rect (10, 110, 100, 20), "Execute") == true) 
 			{
-				rover.GetComponent<VehicleControl>().code = stringToEdit;
-				execute = true;
+				if(stringToEdit != "")
+				{
+					rover.GetComponent<VehicleControl>().code = stringToEdit;
+					execute = true;
+				}
 			}
 		}
-
+		
 	}
 }

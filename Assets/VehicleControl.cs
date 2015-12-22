@@ -15,6 +15,7 @@ public class VehicleControl : MonoBehaviour
 	Compiler compiler = new Compiler();
 	public string code;
 	public bool isMoving;
+	public int movementType;
 	GameObject GUIStuff;
 	public GameObject cameraOrbit;
 
@@ -38,7 +39,6 @@ public class VehicleControl : MonoBehaviour
 			mouseX = mouseX + Input.GetAxis ("Mouse X");
 			mouseY = mouseY - Input.GetAxis("Mouse Y");
 			cameraOrbit.transform.rotation = Quaternion.Euler (mouseY, mouseX, 0);
-
 		}
 
 		if (easyMode == true)
@@ -47,19 +47,6 @@ public class VehicleControl : MonoBehaviour
 		} 
 		else
 		{
-			if(GUIStuff.GetComponent<GUIStuff>().execute == true)
-			{
-				compiler.readText(code,this.gameObject);
-				compiler.processLine();
-				GUIStuff.GetComponent<GUIStuff>().execute = false;
-			}
-			/*
-			if(isMoving = false && compiler.code.Length != 0)
-			{
-				compiler.processLine();
-			}
-			*/
-
 			HardControl ();
 		}
 	}
@@ -88,32 +75,28 @@ public class VehicleControl : MonoBehaviour
 
 	public void HardControl()
 	{
+		if(GUIStuff.GetComponent<GUIStuff>().execute == true)
+		{
+			compiler.readText(code,this.gameObject);
+			compiler.processLine();
+			GUIStuff.GetComponent<GUIStuff>().execute = false;
+		}
+		
+		if(isMoving = false && compiler.code.Length > 0)
+		{
+			compiler.processLine();
+		}
+	
 		if (isMoving == true) 
 		{
 			transform.Translate((targetPoint - transform.position).normalized * Time.deltaTime * movementSpeed);
 		}
 
-		if (Vector3.Distance (transform.position, targetPoint) < 1f) 
+		if (Mathf.Abs(transform.position.x - targetPoint.x) < 0.5f && Mathf.Abs(transform.position.z - targetPoint.z) < 0.5f) 
 		{
 			isMoving = false;
 		}
 		
-	}
-
-
-	public void takeInstruction(int movementType,int value)
-	{
-		if (movementType == 1) 
-		{
-			targetPoint = transform.position + Vector3.forward * value;
-			Debug.Log("Target Point: " + targetPoint);
-			isMoving = true;
-		}
-		if (movementType == 2) 
-		{
-			targetPoint = transform.position + Vector3.back * value;
-			isMoving = true;
-		}
 	}
 
 	void moveForward()
