@@ -7,9 +7,6 @@ public class VehicleControl : MonoBehaviour
 	float rotationSpeed;
 	public bool easyMode = false;
 
-	float mouseX;
-	float mouseY;
-	Transform mouseRotation;
 
 	Vector3 targetPoint;
 	Compiler compiler = new Compiler();
@@ -17,7 +14,8 @@ public class VehicleControl : MonoBehaviour
 	public bool isMoving;
 	public int movementType;
 	GameObject GUIStuff;
-	public GameObject cameraOrbit;
+	public GameObject GameManager;
+
 
 	public GameObject wheelFrontLeft;
 	public GameObject wheelFrontRight;
@@ -34,20 +32,15 @@ public class VehicleControl : MonoBehaviour
 
 	void Update () 
 	{
-		if (Input.GetMouseButton (1)) 
+		if (GameManager.GetComponent<GameStart> ().gameStartFinished == true)
 		{
-			mouseX = mouseX + Input.GetAxis ("Mouse X");
-			mouseY = mouseY - Input.GetAxis("Mouse Y");
-			cameraOrbit.transform.rotation = Quaternion.Euler (mouseY, mouseX, 0);
-		}
-
-		if (easyMode == true)
-		{
-			EasyControl ();
-		} 
-		else
-		{
-			HardControl ();
+			if (easyMode == true)
+			{
+				EasyControl ();
+			} else
+			{
+				HardControl ();
+			}
 		}
 	}
 
@@ -56,7 +49,6 @@ public class VehicleControl : MonoBehaviour
 		if (Input.GetKey (KeyCode.W) == true)
 		{
 			moveForward();
-
 		}
 		if (Input.GetKey (KeyCode.S) == true)
 		{
@@ -101,32 +93,48 @@ public class VehicleControl : MonoBehaviour
 
 	void moveForward()
 	{
-		transform.Translate(Vector3.forward * Time.deltaTime * movementSpeed);
-		wheelFrontRight.transform.Rotate(movementSpeed,0,0);
-		wheelFrontLeft.transform.Rotate(movementSpeed,0,0);
-		wheelRearRight.transform.Rotate(movementSpeed,0,0);
-		wheelRearLeft.transform.Rotate(movementSpeed,0,0);
+		if(GUIStuff.GetComponent<GUIStuff>().electricCharge > 0)
+		{
+			GUIStuff.GetComponent<GUIStuff>().electricCharge -= GUIStuff.GetComponent<GUIStuff>().electricCharge * 0.0001f;
+			transform.Translate(Vector3.forward * Time.deltaTime * movementSpeed);
+			wheelFrontRight.transform.Rotate(movementSpeed,0,0);
+			wheelFrontLeft.transform.Rotate(movementSpeed,0,0);
+			wheelRearRight.transform.Rotate(movementSpeed,0,0);
+			wheelRearLeft.transform.Rotate(movementSpeed,0,0);
+		}
 	}
 
 	void moveBack()
 	{
-		transform.Translate (Vector3.back * Time.deltaTime * movementSpeed);
-		wheelFrontRight.transform.Rotate(-movementSpeed,0,0);
-		wheelFrontLeft.transform.Rotate(-movementSpeed,0,0);
-		wheelRearRight.transform.Rotate(-movementSpeed,0,0);
-		wheelRearLeft.transform.Rotate(-movementSpeed,0,0);
+		if(GUIStuff.GetComponent<GUIStuff>().electricCharge > 0)
+		{
+			GUIStuff.GetComponent<GUIStuff>().electricCharge -= GUIStuff.GetComponent<GUIStuff>().electricCharge * 0.0001f;
+			transform.Translate (Vector3.back * Time.deltaTime * movementSpeed);
+			wheelFrontRight.transform.Rotate(-movementSpeed,0,0);
+			wheelFrontLeft.transform.Rotate(-movementSpeed,0,0);
+			wheelRearRight.transform.Rotate(-movementSpeed,0,0);
+			wheelRearLeft.transform.Rotate(-movementSpeed,0,0);
+		}
 	}
 
 	void rotateLeft()
 	{
-		transform.Rotate(0,-rotationSpeed,0);
+		if(GUIStuff.GetComponent<GUIStuff>().electricCharge > 0)
+		{
+			GUIStuff.GetComponent<GUIStuff>().electricCharge -= GUIStuff.GetComponent<GUIStuff>().electricCharge * 0.0001f;
+			transform.Rotate(0,-rotationSpeed,0);
+		}
 		//wheelFrontRight.transform.Rotate(-movementSpeed,0,0);
 		//wheelFrontLeft.transform.Rotate(-movementSpeed,0,0);
 	}
 
 	void rotateRight()
 	{
-		transform.Rotate(0,rotationSpeed,0);
+		if(GUIStuff.GetComponent<GUIStuff>().electricCharge > 0)
+		{
+			GUIStuff.GetComponent<GUIStuff>().electricCharge -= GUIStuff.GetComponent<GUIStuff>().electricCharge * 0.0001f;
+			transform.Rotate(0,rotationSpeed,0);
+		}
 		//wheelFrontRight.transform.Rotate(-movementSpeed,0,0);
 		//wheelFrontLeft.transform.Rotate(-movementSpeed,0,0);
 	}
